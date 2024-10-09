@@ -1,4 +1,4 @@
-export function checkIfJsonHaveSameKeys(obj1: jsonFile, obj2: jsonFile) {
+function checkIfJsonHaveSameKeys(obj1, obj2) {
   const { name: fileName1, content: content1 } = obj1;
   const { name: fileName2, content: content2 } = obj2;
 
@@ -32,3 +32,7 @@ export function checkIfJsonHaveSameKeys(obj1: jsonFile, obj2: jsonFile) {
 
   return { res: true };
 }
+
+module.exports = {
+  checkIfJsonHaveSameKeys,
+};

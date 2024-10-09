@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { objectsHaveSameStructureInOrder } from "./check-if-json-have-same-structure-in-order";
+const objectsHaveSameStructureInOrder = require("./check-if-json-have-same-structure-in-order.js");
 
 describe("objectsHaveSameStructureInOrder", () => {
   describe("Nullish content checks", () => {

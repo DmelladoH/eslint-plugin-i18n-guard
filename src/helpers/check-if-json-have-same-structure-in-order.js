@@ -1,7 +1,4 @@
-export function objectsHaveSameStructureInOrder(
-  obj1: jsonFile,
-  obj2: jsonFile
-) {
+function objectsHaveSameStructureInOrder(obj1, obj2) {
   const { name: fileName1, content: content1 } = obj1;
   const { name: fileName2, content: content2 } = obj2;
 
@@ -12,7 +9,6 @@ export function objectsHaveSameStructureInOrder(
   const keys1 = Object.keys(content1);
   const keys2 = Object.keys(content2);
 
-  debugger;
   for (let i = 0; i < keys1.length; i++) {
     const key1 = content1[keys1[i]];
     const key2 = content2[keys2[i]];
@@ -49,3 +45,7 @@ export function objectsHaveSameStructureInOrder(
 
   return { res: true };
 }
+
+module.exports = {
+  objectsHaveSameStructureInOrder,
+};

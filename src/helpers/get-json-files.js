@@ -1,8 +1,8 @@
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
-export function getJsonFiles(dir: string) {
-  let files: string[] = [];
+function getJsonFiles(dir) {
+  let files = [];
   fs.readdirSync(dir).forEach((file) => {
     const fullPath = path.join(dir, file);
     const stats = fs.lstatSync(fullPath);
@@ -15,3 +15,7 @@ export function getJsonFiles(dir: string) {
   });
   return files;
 }
+
+module.exports = {
+  getJsonFiles,
+};

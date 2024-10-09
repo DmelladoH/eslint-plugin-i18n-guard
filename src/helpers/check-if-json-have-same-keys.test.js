@@ -1,6 +1,6 @@
 import { expect } from "vitest";
 import { it, describe } from "vitest";
-import { checkIfJsonHaveSameKeys } from "./check-if-json-have-same-keys";
+const checkIfJsonHaveSameKeys = require("./check-if-json-have-same-keys.js");
 
 describe("checkIfJsonHaveSameKeys", () => {
   describe("Nullish content checks", () => {
