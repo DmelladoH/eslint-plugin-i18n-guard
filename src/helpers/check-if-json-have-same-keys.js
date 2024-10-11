@@ -11,6 +11,7 @@ function checkIfJsonHaveSameKeys(obj1, obj2) {
 
   const keys = keys1.length >= keys2.length ? keys1 : keys2;
   const set = keys1.length >= keys2.length ? new Set(keys2) : new Set(keys1);
+  const wrongKeys = [];
 
   for (const key of keys) {
     if (set.has(key)) {
@@ -23,13 +24,15 @@ function checkIfJsonHaveSameKeys(obj1, obj2) {
       if (bothAreObjects) return checkIfJsonHaveSameKeys(newObj1, newObj2);
     } else {
       const errorFile = keys1.length >= keys2.length ? fileName2 : fileName1;
-      return {
-        res: false,
-        error: `"${key}" key is not found in the file: ${errorFile}`,
-      };
+      wrongKeys.push({ key: key, file: errorFile });
     }
   }
-
+  if (wrongKeys.length > 0) {
+    return {
+      res: false,
+      wrongKeys: wrongKeys,
+    };
+  }
   return { res: true };
 }
 

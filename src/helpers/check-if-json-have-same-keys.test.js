@@ -1,6 +1,8 @@
 import { expect } from "vitest";
 import { it, describe } from "vitest";
-const checkIfJsonHaveSameKeys = require("./check-if-json-have-same-keys.js");
+const {
+  checkIfJsonHaveSameKeys,
+} = require("./check-if-json-have-same-keys.js");
 
 describe("checkIfJsonHaveSameKeys", () => {
   describe("Nullish content checks", () => {
@@ -33,7 +35,7 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res1 = checkIfJsonHaveSameKeys(file1, file2);
       expect(res1.res).toBe(false);
-      expect(res1.error).toBe(`"body" key is not found in the file: file2`);
+      expect(res1.wrongKeys).toStrictEqual([{ key: "body", file: "file2" }]);
 
       const file3 = {
         name: "file3",
@@ -51,7 +53,7 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res2 = checkIfJsonHaveSameKeys(file3, file4);
       expect(res2.res).toBe(false);
-      expect(res2.error).toBe(`"body" key is not found in the file: file3`);
+      expect(res2.wrongKeys).toStrictEqual([{ key: "body", file: "file3" }]);
     });
 
     it("should return false when the key name is different", () => {
@@ -72,28 +74,31 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res1 = checkIfJsonHaveSameKeys(file1, file2);
       expect(res1.res).toBe(false);
-      expect(res1.error).toBe(`"body" key is not found in the file: file2`);
+      expect(res1.wrongKeys).toStrictEqual([{ key: "body", file: "file2" }]);
     });
 
-    it("should handle multiple missing keys, and return the first", () => {
+    it("should handle multiple missing keys", () => {
       const file1 = {
         name: "file1",
         content: {
           title: "hello",
           body: "world",
-          author: "unknown",
         },
       };
       const file2 = {
         name: "file2",
         content: {
           title: "Hola",
+          author: "unknown",
         },
       };
 
       const res = checkIfJsonHaveSameKeys(file1, file2);
       expect(res.res).toBe(false);
-      expect(res.error).toBe(`"body" key is not found in the file: file2`);
+      expect(res.wrongKeys).toStrictEqual(
+        [{ key: "body", file: "file2" }],
+        [{ key: "author", file: "file1" }]
+      );
     });
 
     it("should return true when the objects have the same keys", () => {
