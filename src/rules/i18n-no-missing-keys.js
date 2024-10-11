@@ -77,52 +77,40 @@ function create(context) {
   });
 
   fileGroups.forEach((fileGroup) => {
-    // ["f1", "f2", "f3"]
-
-    // "f1" -> "f2", "f3"
-    // "f2" -> "f1", "f3"
-    // "f3" -> "f1", "f2"
+    const visited = {};
 
     fileGroup.map((file) => {
       const obj1 = {
         name: file,
         content: JSON.parse(fs.readFileSync(file, "utf8")),
       };
+
+      visited[file]?.length
+        ? visited[file].push(file)
+        : (visited[file] = [file]);
+
       fileGroup.map((file2) => {
-        if (file !== file2) {
+        if (!visited[file]?.includes(file2)) {
+          visited[file2]?.length
+            ? visited[file2].push(file)
+            : (visited[file2] = [file]);
+
           const obj2 = {
             name: file2,
             content: JSON.parse(fs.readFileSync(file2, "utf8")),
           };
+
+          const { res, wrongKeys } = checkIfJsonHaveSameKeys(obj1, obj2);
+          if (!res) {
+            wrongKeys.map(({ key, file }) => {
+              context.report({
+                message: `"${key}" is missing in file: ${file}`,
+                loc: { line: 1, column: 0 },
+              });
+            });
+          }
         }
       });
-    });
-
-    const firstFile = fileGroup[0];
-
-    fileGroup.slice(1).forEach((file) => {
-      try {
-        const obj1 = {
-          name: firstFile,
-          content: JSON.parse(fs.readFileSync(firstFile, "utf8")),
-        };
-        const obj2 = {
-          name: file,
-          content: JSON.parse(fs.readFileSync(file, "utf8")),
-        };
-
-        const { res, wrongKeys } = checkIfJsonHaveSameKeys(obj1, obj2);
-        if (!res) {
-          wrongKeys.map(({ key, file }) => {
-            context.report({
-              message: `"${key}" is missing in file: ${file}`,
-              loc: { line: 1, column: 0 },
-            });
-          });
-        }
-      } catch (e) {
-        console.log({ e });
-      }
     });
   });
 
