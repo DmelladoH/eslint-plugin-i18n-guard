@@ -74,7 +74,10 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res1 = checkIfJsonHaveSameKeys(file1, file2);
       expect(res1.res).toBe(false);
-      expect(res1.wrongKeys).toStrictEqual([{ key: "body", file: "file2" }]);
+      expect(res1.wrongKeys).toStrictEqual([
+        { key: "body", file: "file2" },
+        { key: "bodi", file: "file1" },
+      ]);
     });
 
     it("should handle multiple missing keys", () => {
@@ -95,10 +98,10 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res = checkIfJsonHaveSameKeys(file1, file2);
       expect(res.res).toBe(false);
-      expect(res.wrongKeys).toStrictEqual(
-        [{ key: "body", file: "file2" }],
-        [{ key: "author", file: "file1" }]
-      );
+      expect(res.wrongKeys).toStrictEqual([
+        { key: "body", file: "file2" },
+        { key: "author", file: "file1" },
+      ]);
     });
 
     it("should return true when the objects have the same keys", () => {
@@ -119,7 +122,6 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res = checkIfJsonHaveSameKeys(file1, file2);
       expect(res.res).toBe(true);
-      expect(res.error).toBeUndefined();
     });
 
     it("should return false when key names differ by a case sensitive typo", () => {
@@ -140,7 +142,10 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res = checkIfJsonHaveSameKeys(file1, file2);
       expect(res.res).toBe(false);
-      expect(res.error).toBe(`"body" key is not found in the file: file2`);
+      expect(res.wrongKeys).toStrictEqual([
+        { key: "body", file: "file2" },
+        { key: "Body", file: "file1" },
+      ]);
     });
   });
 
@@ -168,7 +173,7 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res1 = checkIfJsonHaveSameKeys(file1, file2);
       expect(res1.res).toBe(false);
-      expect(res1.error).toBe(`"part2" key is not found in the file: file2`);
+      expect(res1.wrongKeys).toStrictEqual([{ key: "part2", file: "file2" }]);
     });
 
     it("should handle deep nested objects with more levels", () => {
@@ -198,10 +203,10 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res = checkIfJsonHaveSameKeys(file1, file2);
       expect(res.res).toBe(false);
-      expect(res.error).toBe(`"tags" key is not found in the file: file2`);
+      expect(res.wrongKeys).toStrictEqual([{ key: "tags", file: "file2" }]);
     });
 
-    it("should return true when nested objects have the same keys", () => {
+    it("should handle multiple missing keys", () => {
       const file1 = {
         name: "file1",
         content: {
@@ -219,9 +224,45 @@ describe("checkIfJsonHaveSameKeys", () => {
         content: {
           meta: {
             version: 1,
+            main: "h",
             details: {
               author: "Jane",
-              tags: ["example", "json"],
+              lastName: "Austin",
+            },
+          },
+        },
+      };
+
+      const res = checkIfJsonHaveSameKeys(file1, file2);
+      expect(res.res).toBe(false);
+      expect(res.wrongKeys).toStrictEqual([
+        { key: "tags", file: "file2" },
+        { key: "lastName", file: "file1" },
+        { key: "main", file: "file1" },
+      ]);
+    });
+
+    it("should return true when nested objects have the same keys", () => {
+      const file1 = {
+        name: "file1",
+        content: {
+          meta: {
+            version: 1,
+            details: {
+              author: "John",
+              tags: "json",
+            },
+          },
+        },
+      };
+      const file2 = {
+        name: "file2",
+        content: {
+          meta: {
+            version: 1,
+            details: {
+              author: "Jane",
+              tags: "js",
             },
           },
         },
@@ -229,7 +270,6 @@ describe("checkIfJsonHaveSameKeys", () => {
 
       const res = checkIfJsonHaveSameKeys(file1, file2);
       expect(res.res).toBe(true);
-      expect(res.error).toBeUndefined();
     });
   });
 });

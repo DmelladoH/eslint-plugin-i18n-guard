@@ -43,7 +43,7 @@ const meta = {
 
 function create(context) {
   const fileName = context.getFilename();
-  const entryPoint = context.options[0]?.entryPoint || "main.tsx";
+  const entryPoint = context.options[0]?.entryPoint;
 
   if (!entryPoint) {
     context.report({
@@ -73,34 +73,27 @@ function create(context) {
   );
 
   const fileGroups = directories.map((dir) => {
-    return getJsonFiles(dir);
+    const files = getJsonFiles(dir);
+    return files.map((file) => ({
+      name: file,
+      content: JSON.parse(fs.readFileSync(file, "utf8")),
+    }));
   });
 
   fileGroups.forEach((fileGroup) => {
     const visited = {};
-
     fileGroup.map((file) => {
-      const obj1 = {
-        name: file,
-        content: JSON.parse(fs.readFileSync(file, "utf8")),
-      };
-
-      visited[file]?.length
-        ? visited[file].push(file)
-        : (visited[file] = [file]);
+      visited[file.name]?.length
+        ? visited[file.name].push(file.name)
+        : (visited[file.name] = [file.name]);
 
       fileGroup.map((file2) => {
-        if (!visited[file]?.includes(file2)) {
-          visited[file2]?.length
-            ? visited[file2].push(file)
-            : (visited[file2] = [file]);
+        if (!visited[file.name]?.includes(file2.name)) {
+          visited[file2.name]?.length
+            ? visited[file2.name].push(file.name)
+            : (visited[file2.name] = [file.name]);
 
-          const obj2 = {
-            name: file2,
-            content: JSON.parse(fs.readFileSync(file2, "utf8")),
-          };
-
-          const { res, wrongKeys } = checkIfJsonHaveSameKeys(obj1, obj2);
+          const { res, wrongKeys } = checkIfJsonHaveSameKeys(file, file2);
           if (!res) {
             wrongKeys.map(({ key, file }) => {
               context.report({
