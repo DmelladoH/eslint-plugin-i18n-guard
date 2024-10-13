@@ -5,18 +5,15 @@ function checkIfJsonHaveSameKeys(obj1, obj2) {
   if (content1 == null || content2 == null)
     return { res: false, wrongKeys: [] };
   if (typeof content1 !== "object" || typeof content2 !== "object") {
-    console.log({ content1, content2 });
     const keys =
       typeof content1 === "object"
         ? Object.keys(content1)
         : Object.keys(content2);
-    console.log(keys);
     const foo = keys.map((key) => ({
       key: key,
       file: content1 === "object" ? fileName2 : fileName1,
     }));
 
-    console.log({ foo });
     return { res: false, wrongKeys: foo };
   }
 
@@ -29,8 +26,6 @@ function checkIfJsonHaveSameKeys(obj1, obj2) {
   for (const entry of set.entries()) {
     const key = entry[0];
     if (set.has(key)) {
-      console.log({ c1: content1, c2: content2 });
-      console.log({ cont1: content1[key], cont2: content2[key] });
       if (content1[key] == null && content2 != null) {
         wrongKeys.push({ key: key, file: fileName1 });
       }
@@ -41,7 +36,6 @@ function checkIfJsonHaveSameKeys(obj1, obj2) {
       const newObj1 = { name: fileName1, content: content1[key] };
       const newObj2 = { name: fileName2, content: content2[key] };
 
-      console.log({ newObj1, newObj2 });
       const bothAreObjects =
         typeof content2[key] === "object" || typeof content1[key] === "object";
 
@@ -50,13 +44,6 @@ function checkIfJsonHaveSameKeys(obj1, obj2) {
         const wrongKeysNested = wk.length ? [...wk] : [];
         wrongKeys.push(...wrongKeysNested);
       }
-
-      // const oneIsAnObject =
-      //   typeof content2[key] === "object" || typeof content1[key] === "object";
-
-      // if (oneIsAnObject) {
-
-      // }
     } else {
       const errorFile = keys1.length >= keys2.length ? fileName2 : fileName1;
       wrongKeys.push({ key: key, file: errorFile });
