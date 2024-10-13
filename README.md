@@ -55,8 +55,50 @@ This will prevent not translated texts across our application.
 
 #### Example
 
+```JSON
+// translations/en.json
+{
+  "welcome": "Welcome",
+  "logout": "Log out"
+}
+
+// translations/fr.json
+{
+  "welcome": "Bienvenue"
+}
+```
+
+```BASH
+"logout" is missing in file: translations/fr.json
+```
+
 ### i18n-consistent-json-files.js
+
+This rule checks that the order of the keys is the same across all translation files. It warns if the key order is inconsistent.
+
+#### Example
+
+```Json
+// translations/en.json
+{
+  "welcome": "Welcome",
+  "logout": "Log out"
+}
+
+// translations/fr.json
+{
+  "logout": "Se déconnecter",
+  "welcome": "Bienvenue"
+}
+```
+
+```BASH
+"welcome" is not consistent in files: translations/en.json, translations/fr.json
+```
 
 ### Options
 
-## Configuration
+Both rules accept the following options:
+
+- **directories**: An array of directory paths containing the i18n JSON files that should be checked for consistency.
+- **entryPoint**: The entry point file of your application (e.g., main.tsx, App.tsx). The ESLint error or warning messages will appear in this file.
