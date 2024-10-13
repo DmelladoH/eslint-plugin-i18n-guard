@@ -242,6 +242,36 @@ describe("checkIfJsonHaveSameKeys", () => {
       ]);
     });
 
+    it("should return false when a two keys have the same name but one is an object and the other one not", () => {
+      const file1 = {
+        name: "file1",
+        content: {
+          meta: {
+            version: 1,
+            details: "details",
+          },
+        },
+      };
+      const file2 = {
+        name: "file2",
+        content: {
+          meta: {
+            version: 1,
+            details: {
+              author: "Jane",
+              tags: "js",
+            },
+          },
+        },
+      };
+      const { res, wrongKeys } = checkIfJsonHaveSameKeys(file1, file2);
+      expect(res).toBe(false);
+      expect(wrongKeys).toStrictEqual([
+        { key: "author", file: "file1" },
+        { key: "tags", file: "file1" },
+      ]);
+    });
+
     it("should return true when nested objects have the same keys", () => {
       const file1 = {
         name: "file1",
