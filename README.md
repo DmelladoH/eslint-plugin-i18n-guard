@@ -22,6 +22,8 @@ yarn add eslint eslint-plugin-i18n-guard --dev
 In your ESLint configuration (.eslintrc.json, .eslintrc.js), add the plugin and configure the rules:
 
 ```JavaScript
+import i18nGuard from "eslint-plugin-i18n-guard";
+
 const i18nOptions = {
     "directories": ["src/translations"],
     "entryPoint": "src/App.tsx"
@@ -30,18 +32,24 @@ const i18nOptions = {
 ```
 
 ```JavaScript
-{
-    "rules": {
-        "i18n-consistency/i18n-no-missing-keys": [
+export default eslint.config(
+    //.....
+
+    plugins: {
+      "i18n-guard": i18nGuard,
+    },
+    rules: {
+        "i18n-guard/i18n-no-missing-keys": [
             "error",
             i18nOptions
         ],
-        "i18n-consistency/i18n-consistent-json": [
+        "i18n-guard/i18n-consistent-json": [
             "warn",
             i18nOptions
         ]
     }
-}
+)
+
 
 ```
 
